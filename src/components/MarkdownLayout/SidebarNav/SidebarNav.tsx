@@ -16,7 +16,7 @@ export interface NavLinkGroup {
   children: MarkdownLayoutSidebarModuleLinkInfo[];
 }
 
-export const SidebarNav = () => {
+export const SidebarNav = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const { markdownLayoutInfo, sidebarLinks, activeIDs } = useContext(
     MarkdownLayoutContext
   )!;
@@ -25,6 +25,7 @@ export const SidebarNav = () => {
     markdownLayoutInfo instanceof SolutionInfo
       ? 'general'
       : markdownLayoutInfo.section;
+
   if (markdownLayoutInfo instanceof SolutionInfo) {
     for (const section of Object.keys(
       SECTION_LABELS
@@ -45,7 +46,7 @@ export const SidebarNav = () => {
     return MODULE_ORDERING[activeSection].map((category: Chapter) => ({
       label: category.name,
       children: category.items.map(
-        moduleID => sidebarLinks.find(link => link.id === moduleID)! // lol O(n^2)?
+        moduleID => sidebarLinks.find(link => link.id === moduleID)!
       ),
     }));
   }, [activeSection, sidebarLinks]);
@@ -67,12 +68,18 @@ export const SidebarNav = () => {
             key={group.label}
             label={group.label}
             isActive={
-              group.children.findIndex(x => x.id === markdownLayoutInfo.id) !==
-              -1
+              group.children.findIndex(
+                x => x.id === markdownLayoutInfo.id
+              ) !== -1
             }
+            isCollapsed={isCollapsed}
           >
             {group.children.map(link => (
-              <ItemLink key={link.id} link={link} />
+              <ItemLink
+                key={link.id}
+                link={link}
+                isCollapsed={isCollapsed}
+              />
             ))}
           </Accordion>
         ))}

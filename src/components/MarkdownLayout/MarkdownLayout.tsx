@@ -36,16 +36,17 @@ const ContentContainer = ({ children, tableOfContents }) => (
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}
-        <div
+        {/* <div
           className="order-1 hidden shrink-0 lg:block"
           style={{ width: '20rem' }}
-        />
+        /> */}
         {tableOfContents.length > 1 && (
           <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
-        <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
+        {/* <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8"> */}
+        <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 lg:pl-[5rem]">
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />

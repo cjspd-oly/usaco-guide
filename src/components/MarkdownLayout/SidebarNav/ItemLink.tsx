@@ -11,8 +11,10 @@ import {
 
 const ItemLink = ({
   link,
+  isCollapsed,
 }: {
   link: MarkdownLayoutSidebarModuleLinkInfo | ModuleLinkInfo;
+  isCollapsed: boolean;
 }) => {
   const { activeIDs } = useContext(MarkdownLayoutContext)!;
   const isActive = activeIDs.includes(link.id);
@@ -20,7 +22,7 @@ const ItemLink = ({
 
   React.useEffect(() => {
     if (isActive && itemRef.current) {
-      itemRef.current.scrollIntoView({ block: `center` });
+      itemRef.current.scrollIntoView({ block: 'center' });
     }
   }, [isActive]);
 
@@ -45,22 +47,37 @@ const ItemLink = ({
   }
 
   return (
-    <span
-      className={`link-with-progress-container ${linkWithProgressColorClass}`}
-    >
+    <span className={`link-with-progress-container ${linkWithProgressColorClass}`}>
       <Link
-        to={`${link.url}${
-          typeof location !== 'undefined' ? location.search : ''
-        }`}
+        to={`${link.url}${typeof location !== 'undefined' ? location.search : ''}`}
+        className="block"
       >
         <span
           className={clsx(
-            'link-with-progress-link dark:hover:text-dark-high-emphasis flex items-center py-3 pr-4 pl-12 text-sm leading-5 hover:bg-blue-50 focus:bg-blue-100 dark:hover:bg-gray-900 dark:focus:bg-gray-800',
+            'link-with-progress-link dark:hover:text-dark-high-emphasis flex items-center py-3 pr-4 text-sm leading-5 hover:bg-blue-50 focus:bg-blue-100 dark:hover:bg-gray-900 dark:focus:bg-gray-800',
+            isCollapsed ? 'justify-center pl-0' : 'pl-12',
             isActive && 'link-with-progress-link--active font-medium'
           )}
           ref={itemRef}
         >
-          {link.title}
+          {isCollapsed ? (
+            <span
+              className={clsx(
+                'text-lg font-bold',
+                progress === 'Complete' && 'text-green-500',
+                progress === 'Reading' && 'text-yellow-500',
+                progress === 'Practicing' && 'text-blue-500',
+                progress === 'Skipped' && 'text-gray-400',
+                progress === 'Ignored' && 'text-red-500',
+                'transition-opacity duration-200'
+              )}
+              title={link.title} // Hover title in collapsed state
+            >
+              *
+            </span>
+          ) : (
+            <span>{link.title}</span>
+          )}
         </span>
       </Link>
     </span>

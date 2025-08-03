@@ -1,6 +1,6 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
@@ -35,25 +35,17 @@ const ContentContainer = ({ children, tableOfContents }) => (
   >
     <div className="mx-auto">
       <div className="flex justify-center">
-        {/* Placeholder for the sidebar */}
-        {/* <div
-          className="order-1 hidden shrink-0 lg:block"
-          style={{ width: '20rem' }}
-        /> */}
         {tableOfContents.length > 1 && (
           <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
-        {/* <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8"> */}
         <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 lg:pl-[5rem]">
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />
           </div>
-
           {children}
-
           <div className="pt-4 pb-6">
             <NavBar alignNavButtonsRight={false} />
           </div>
@@ -73,6 +65,26 @@ export default function MarkdownLayout({
   const userProgressOnModules = useUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
   const lang = useUserLangSetting();
+
+  // Hydration-safe sidebar pinned state (persisted)
+  const [sidebarPinned, setSidebarPinned] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("usacoguide:sidebar:pinned");
+      if (stored !== null) setSidebarPinned(stored === "true");
+    }
+  }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(
+        "usacoguide:sidebar:pinned",
+        sidebarPinned ? "true" : "false"
+      );
+    }
+  }, [sidebarPinned]);
+
+  // Sidebar hover state
+  const [sidebarHovering, setSidebarHovering] = useState(false);
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
@@ -139,26 +151,34 @@ export default function MarkdownLayout({
       <ContactUsSlideoverProvider>
         <ProblemSuggestionModalProvider>
           <MobileSideNav />
-          <DesktopSidebar />
+
+          {/* PIN BUTTON OUTSIDE SIDEBAR */}
+          <button
+            className="fixed left-2 top-5 z-40 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center border border-gray-200 dark:bg-dark-surface dark:text-white dark:border-dark-border transition"
+            onClick={() => setSidebarPinned(p => !p)}
+            aria-label={sidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
+            type="button"
+          >
+            {sidebarPinned ? "📍" : "📌"}
+          </button>
+
+          <DesktopSidebar
+            pinned={sidebarPinned}
+            hovering={sidebarHovering}
+            setHovering={setSidebarHovering}
+          />
 
           <div className="w-full">
             <MobileAppBar />
-
             <ContentContainer tableOfContents={tableOfContents}>
               <NotSignedInWarning />
-
               <ModuleHeaders moduleLinks={moduleLinks} />
-
               <div className={tableOfContents.length > 1 ? '2xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
-
               {children}
-
               <ModuleProgressUpdateBanner />
-
               <ForumCTA />
-
               {/*<div className="my-8">*/}
               {/*  <ModuleFeedback markdownData={markdownData} />*/}
               {/*</div>*/}

@@ -16,7 +16,7 @@ export interface NavLinkGroup {
   children: MarkdownLayoutSidebarModuleLinkInfo[];
 }
 
-export const SidebarNav = ({ isCollapsed }: { isCollapsed: boolean }) => {
+export const SidebarNav = ({ isCollapsed }: { isCollapsed?: boolean }) => {
   const { markdownLayoutInfo, sidebarLinks, activeIDs } = useContext(
     MarkdownLayoutContext
   )!;

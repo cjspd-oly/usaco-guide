@@ -14,7 +14,7 @@ const ItemLink = ({
   isCollapsed,
 }: {
   link: MarkdownLayoutSidebarModuleLinkInfo | ModuleLinkInfo;
-  isCollapsed: boolean;
+  isCollapsed?: boolean;
 }) => {
   const { activeIDs } = useContext(MarkdownLayoutContext)!;
   const isActive = activeIDs.includes(link.id);

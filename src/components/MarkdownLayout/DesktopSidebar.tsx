@@ -17,7 +17,7 @@ export default function DesktopSidebar({
 }: DesktopSidebarProps) {
   const isCollapsed = !pinned && !hovering;
 
-  // Only respond to mouse events when NOT pinned
+  // show hover when NOT pinned
   return (
     <div
       className="fixed top-0 bottom-0 left-0 z-10 hidden lg:block transition-all duration-300 ease-in-out"

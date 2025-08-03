@@ -1,24 +1,17 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import {
-  moduleIDToSectionMap,
-  moduleIDToURLMap,
-} from '../../../content/ordering';
+import React, { useState, useEffect, useContext } from "react";
+import { moduleIDToSectionMap, moduleIDToURLMap } from '../../../content/ordering';
 import ConfettiContext from '../../context/ConfettiContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
-import {
-  useSetProgressOnModule,
-  useUserProgressOnModules,
-} from '../../context/UserDataContext/properties/userProgress';
+import { useSetProgressOnModule, useUserProgressOnModules} from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import ForumCTA from '../ForumCTA';
-import DesktopSidebar from './DesktopSidebar';
+import DesktopSidebar from "./DesktopSidebar";
 import MobileAppBar from './MobileAppBar';
 import MobileSideNav from './MobileSideNav';
 import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
@@ -27,6 +20,8 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
+import PinButton from "./SidebarNav/PinButton";
+
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -134,6 +129,8 @@ export default function MarkdownLayout({
   } else {
     activeIDs = problemSolutionContext!.modulesThatHaveProblem.map(x => x.id);
   }
+const [mounted, setMounted] = useState(false);
+useEffect(() => { setMounted(true); }, []);
 
   return (
     <MarkdownLayoutContext.Provider
@@ -141,7 +138,7 @@ export default function MarkdownLayout({
         markdownLayoutInfo: markdownData,
         sidebarLinks: moduleLinks,
         activeIDs,
-        uniqueID: null, // legacy, remove when classes is removed
+        uniqueID: null,
         isMobileNavOpen,
         setIsMobileNavOpen,
         moduleProgress,
@@ -152,21 +149,22 @@ export default function MarkdownLayout({
         <ProblemSuggestionModalProvider>
           <MobileSideNav />
 
-          {/* PIN BUTTON OUTSIDE SIDEBAR */}
-          <button
-            className="fixed left-2 top-5 z-40 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center border border-gray-200 dark:bg-dark-surface dark:text-white dark:border-dark-border transition"
-            onClick={() => setSidebarPinned(p => !p)}
-            aria-label={sidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
-            type="button"
-          >
-            {sidebarPinned ? "📍" : "📌"}
-          </button>
+          {/* PIN BUTTON and SIDEBAR are siblings in a relative container */}
+          <div className="relative h-screen">
+    <DesktopSidebar
+      pinned={sidebarPinned}
+      hovering={sidebarHovering}
+      setHovering={setSidebarHovering}
+    />
+    {mounted && (
+      <PinButton
+        isCollapsed={!sidebarPinned && !sidebarHovering}
+        sidebarPinned={sidebarPinned}
+        onClick={() => setSidebarPinned(p => !p)}
+      />
+    )}
+  </div>
 
-          <DesktopSidebar
-            pinned={sidebarPinned}
-            hovering={sidebarHovering}
-            setHovering={setSidebarHovering}
-          />
 
           <div className="w-full">
             <MobileAppBar />
@@ -179,9 +177,6 @@ export default function MarkdownLayout({
               {children}
               <ModuleProgressUpdateBanner />
               <ForumCTA />
-              {/*<div className="my-8">*/}
-              {/*  <ModuleFeedback markdownData={markdownData} />*/}
-              {/*</div>*/}
             </ContentContainer>
           </div>
         </ProblemSuggestionModalProvider>

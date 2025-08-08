@@ -17,6 +17,10 @@ const MarkdownLayoutContext = createContext<{
   uniqueID: string | null;
   isMobileNavOpen: boolean;
   setIsMobileNavOpen: (x: boolean) => void;
+  isSidebarPinned: boolean;
+  setIsSidebarPinned: (x: boolean) => void;
+  isSidebarHovering: boolean;
+  setIsSidebarHovering: (x: boolean) => void;
   moduleProgress: ModuleProgress;
   handleCompletionChange: (x: ModuleProgress) => void;
 } | null>(null);

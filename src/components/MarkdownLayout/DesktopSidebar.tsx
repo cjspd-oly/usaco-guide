@@ -1,29 +1,32 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import Logo from '../Logo';
 import SidebarBottomButtons from './SidebarBottomButtons';
 import { SidebarNav } from './SidebarNav/SidebarNav';
 
-export default function DesktopSidebar() {
-  const { isSidebarPinned, isSidebarHovering, setIsSidebarHovering } =
-    useMarkdownLayout();
-  const isCollapsed = !isSidebarPinned && !isSidebarHovering;
+type DesktopSidebarProps = {
+  pinned: boolean;
+  hovering: boolean;
+  setHovering: (hover: boolean) => void;
+};
+
+export default function DesktopSidebar({
+  pinned,
+  hovering,
+  setHovering,
+}: DesktopSidebarProps) {
+  const isCollapsed = !pinned && !hovering;
 
   // show hover when NOT pinned
   return (
     <div
-      className="fixed top-0 bottom-0 left-0 z-10 hidden transition-all duration-300 ease-in-out lg:block"
+      className="fixed top-0 bottom-0 left-0 z-10 hidden lg:block transition-all duration-300 ease-in-out"
       style={{ width: isCollapsed ? '5rem' : '20rem' }}
-      onMouseEnter={() => {
-        if (!isSidebarPinned) setIsSidebarHovering(true);
-      }}
-      onMouseLeave={() => {
-        if (!isSidebarPinned) setIsSidebarHovering(false);
-      }}
+      onMouseEnter={() => { if (!pinned) setHovering(true); }}
+      onMouseLeave={() => { if (!pinned) setHovering(false); }}
     >
       <div
-        className="dark:bg-dark-surface flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out dark:border-gray-800"
+        className="dark:bg-dark-surface flex h-screen flex-col border-r border-gray-200 bg-white dark:border-gray-800 transition-all duration-300 ease-in-out"
         style={{ width: isCollapsed ? '5rem' : '20rem' }}
       >
         {/* TOP: Logo */}

@@ -1,37 +1,29 @@
-import React from "react";
+import React from 'react';
+import { useMarkdownLayout } from '../../../context/MarkdownLayoutContext';
 
-type PinButtonProps = {
-  isCollapsed: boolean;
-  sidebarPinned: boolean;
-  onClick: () => void;
-};
-
-const SIDEBAR_WIDTH_COLLAPSED = 80;  // 5rem = 80px
+const SIDEBAR_WIDTH_COLLAPSED = 80; // 5rem = 80px
 const SIDEBAR_WIDTH_EXPANDED = 320; // 20rem = 320px
 const BUTTON_SIZE = 44;
 
-export default function PinButton({ isCollapsed, sidebarPinned, onClick }: PinButtonProps) {
-  const buttonLeft = (isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED) - BUTTON_SIZE / 2;
+export default function PinButton() {
+  const { isSidebarPinned, setIsSidebarPinned, setIsSidebarHovering } =
+    useMarkdownLayout();
+  const isCollapsed = !isSidebarPinned;
+
+  const buttonLeft =
+    (isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED) -
+    BUTTON_SIZE / 2;
   return (
     <button
-      className={`
-        absolute
-        top-8
-        z-50
-        w-11 h-11 rounded-full
-        flex items-center justify-center
-        shadow
-        border border-gray-200 dark:border-dark-border
-        bg-white dark:bg-dark-surface
-        transition-all duration-300
-        group
-      `}
+      className={`dark:border-dark-border dark:bg-dark-surface group absolute top-8 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white shadow transition-all duration-300`}
       style={{ left: buttonLeft }}
-      onClick={onClick}
-      aria-label={sidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
+      onMouseEnter={() => setIsSidebarHovering(true)}
+      onMouseLeave={() => setIsSidebarHovering(false)}
+      onClick={() => setIsSidebarPinned(!isSidebarPinned)}
+      aria-label={isSidebarPinned ? 'Unpin Sidebar' : 'Pin Sidebar'}
       type="button"
     >
-      <span className="text-2xl">{sidebarPinned ? "📍" : "📌"}</span>
+      <span className="text-2xl">{isSidebarPinned ? '📍' : '📌'}</span>
     </button>
   );
 }

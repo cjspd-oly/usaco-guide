@@ -162,7 +162,7 @@ export default function MarkdownLayout({
           <MobileSideNav />
 
           {/* PIN BUTTON and SIDEBAR are siblings in a relative container */}
-          <div className="relative h-screen">
+          <div className="relative">
             <DesktopSidebar />
             {mounted && <PinButton />}
           </div>

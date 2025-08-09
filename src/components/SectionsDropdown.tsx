@@ -5,10 +5,20 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
 
+const sectionColors: Record<string, string> = {
+  general: 'bg-blue-700 dark:bg-blue-900',
+  bronze: 'bg-orange-800 dark:bg-orange-900',
+  silver: 'bg-teal-700 dark:bg-teal-900',
+  gold: 'bg-yellow-700 dark:bg-yellow-900',
+  plat: 'bg-purple-700 dark:bg-purple-900',
+  adv: 'bg-green-700 dark:bg-green-900',
+};
+
 export default function SectionsDropdown({
   currentSection = null as string | null,
   sidebarNav = false,
   onSelect = null as ((section: string) => void) | null,
+  isCollapsed = false, // ✅ added
 }): JSX.Element {
   return (
     <Menu as="div">
@@ -22,9 +32,21 @@ export default function SectionsDropdown({
                 'border-b-2 border-transparent pt-0.5 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500'
             )}
           >
-            <span>
-              {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
-            </span>
+            {isCollapsed ? (
+              // collapsed → show colored dot
+              <span
+                className={clsx(
+                  'inline-block h-3 w-3 rounded-full',
+                  sectionColors[currentSection || 'general']
+                )}
+              />
+            ) : (
+              // expanded → show normal text
+              <span>
+                {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
+              </span>
+            )}
+
             <ChevronDownIcon
               className={`${
                 open ? 'text-gray-500' : 'text-gray-400'

@@ -1,17 +1,23 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React, { useState, useEffect, useContext } from "react";
-import { moduleIDToSectionMap, moduleIDToURLMap } from '../../../content/ordering';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+} from '../../../content/ordering';
 import ConfettiContext from '../../context/ConfettiContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
-import { useSetProgressOnModule, useUserProgressOnModules} from '../../context/UserDataContext/properties/userProgress';
+import {
+  useSetProgressOnModule,
+  useUserProgressOnModules,
+} from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import ForumCTA from '../ForumCTA';
-import DesktopSidebar from "./DesktopSidebar";
+import DesktopSidebar from './DesktopSidebar';
 import MobileAppBar from './MobileAppBar';
 import MobileSideNav from './MobileSideNav';
 import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
@@ -20,8 +26,6 @@ import NavBar from './NavBar';
 import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
-import PinButton from "./SidebarNav/PinButton";
-
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -64,16 +68,16 @@ export default function MarkdownLayout({
   // Hydration-safe sidebar pinned state (persisted)
   const [sidebarPinned, setSidebarPinned] = useState(false);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = window.localStorage.getItem("usacoguide:sidebar:pinned");
-      if (stored !== null) setSidebarPinned(stored === "true");
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage.getItem('usacoguide:sidebar:pinned');
+      if (stored !== null) setSidebarPinned(stored === 'true');
     }
   }, []);
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       window.localStorage.setItem(
-        "usacoguide:sidebar:pinned",
-        sidebarPinned ? "true" : "false"
+        'usacoguide:sidebar:pinned',
+        sidebarPinned ? 'true' : 'false'
       );
     }
   }, [sidebarPinned]);
@@ -129,8 +133,10 @@ export default function MarkdownLayout({
   } else {
     activeIDs = problemSolutionContext!.modulesThatHaveProblem.map(x => x.id);
   }
-const [mounted, setMounted] = useState(false);
-useEffect(() => { setMounted(true); }, []);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <MarkdownLayoutContext.Provider
@@ -143,6 +149,12 @@ useEffect(() => { setMounted(true); }, []);
         setIsMobileNavOpen,
         moduleProgress,
         handleCompletionChange,
+
+        // ✅ adding these 4 lines
+        isSidebarPinned: sidebarPinned,
+        setIsSidebarPinned: setSidebarPinned,
+        isSidebarHovering: sidebarHovering,
+        setIsSidebarHovering: setSidebarHovering,
       }}
     >
       <ContactUsSlideoverProvider>
@@ -151,20 +163,21 @@ useEffect(() => { setMounted(true); }, []);
 
           {/* PIN BUTTON and SIDEBAR are siblings in a relative container */}
           <div className="relative">
-    <DesktopSidebar
-      pinned={sidebarPinned}
-      hovering={sidebarHovering}
-      setHovering={setSidebarHovering}
-    />
-    {mounted && (
-      <PinButton
-        isCollapsed={!sidebarPinned && !sidebarHovering}
-        sidebarPinned={sidebarPinned}
-        onClick={() => setSidebarPinned(p => !p)}
-      />
-    )}
-  </div>
+            <DesktopSidebar
+              pinned={sidebarPinned}
+              hovering={sidebarHovering}
+              setHovering={setSidebarHovering}
+              togglePinned={() => setSidebarPinned(p => !p)}
+            />
 
+            {/* {mounted && (
+              <PinButton
+                isCollapsed={!sidebarPinned && !sidebarHovering}
+                sidebarPinned={sidebarPinned}
+                onClick={() => setSidebarPinned(p => !p)}
+              />
+            )} */}
+          </div>
 
           <div className="w-full">
             <MobileAppBar />

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type PinButtonProps = {
   isCollapsed: boolean;
@@ -6,32 +6,24 @@ type PinButtonProps = {
   onClick: () => void;
 };
 
-const SIDEBAR_WIDTH_COLLAPSED = 80;  // 5rem = 80px
+const SIDEBAR_WIDTH_COLLAPSED = 80; // 5rem = 80px
 const SIDEBAR_WIDTH_EXPANDED = 320; // 20rem = 320px
 const BUTTON_SIZE = 44;
 
-export default function PinButton({ isCollapsed, sidebarPinned, onClick }: PinButtonProps) {
-  const buttonLeft = (isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED) - BUTTON_SIZE / 2;
+export default function PinButton({
+  isCollapsed,
+  sidebarPinned,
+  onClick,
+}: PinButtonProps) {
   return (
     <button
-      className={`
-        absolute
-        top-8
-        z-50
-        w-11 h-11 rounded-full
-        flex items-center justify-center
-        shadow
-        border border-gray-200 dark:border-dark-border
-        bg-white dark:bg-dark-surface
-        transition-all duration-300
-        group
-      `}
-      style={{ left: buttonLeft }}
+      className={`dark:text-dark-med-emphasis flex items-center border-b border-gray-200 p-4 text-sm leading-5 font-medium text-gray-600 transition duration-150 ease-in-out hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-100 focus:outline-hidden dark:border-gray-800 dark:hover:bg-gray-900 dark:focus:bg-gray-900 ${isCollapsed ? 'justify-center' : ''} `}
       onClick={onClick}
-      aria-label={sidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
+      aria-label={sidebarPinned ? 'Unpin Sidebar' : 'Pin Sidebar'}
       type="button"
     >
-      <span className="text-2xl">{sidebarPinned ? "📍" : "📌"}</span>
+      <span className="text-xl">{sidebarPinned ? '📍' : '📌'}</span>
+      {!isCollapsed && <span className="ml-4">Pin Sidebar</span>}
     </button>
   );
 }

@@ -47,7 +47,9 @@ const ItemLink = ({
   }
 
   return (
-    <span className={`link-with-progress-container ${linkWithProgressColorClass}`}>
+    <span
+      className={`link-with-progress-container ${linkWithProgressColorClass}`}
+    >
       <Link
         to={`${link.url}${typeof location !== 'undefined' ? location.search : ''}`}
         className="block"
@@ -62,16 +64,6 @@ const ItemLink = ({
         >
           {isCollapsed ? (
             <span
-            // remove it, for showing dots in closed sidebar
-              // className={clsx(
-              //   // 'text-lg font-bold',
-              //   // progress === 'Complete' && 'text-green-500',
-              //   // progress === 'Reading' && 'text-yellow-500',
-              //   // progress === 'Practicing' && 'text-blue-500',
-              //   // progress === 'Skipped' && 'text-gray-400',
-              //   // progress === 'Ignored' && 'text-red-500',
-              //   // 'transition-opacity duration-200'
-              // )}
               title={link.title} // Hover title in collapsed state
             >
               *
